@@ -51,7 +51,7 @@
        <rect>
         <x>110</x>
         <y>20</y>
-        <width>58</width>
+        <width>431</width>
         <height>16</height>
        </rect>
       </property>
@@ -71,6 +71,9 @@
       <layout class="QHBoxLayout" name="horizontalLayout"/>
      </widget>
      <widget class="QTextEdit" name="textEdit">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>630</x>
@@ -78,6 +81,12 @@
         <width>141</width>
         <height>31</height>
        </rect>
+      </property>
+      <property name="inputMethodHints">
+       <set>Qt::ImhNone</set>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
       </property>
      </widget>
      <widget class="QLabel" name="Image_result">
@@ -94,9 +103,9 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="Vedio">
+    <widget class="QWidget" name="Video">
      <attribute name="title">
-      <string>Vedio</string>
+      <string>Video</string>
      </attribute>
     </widget>
     <widget class="QWidget" name="Real_time">
