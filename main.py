@@ -48,7 +48,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def load_model(self):
         ofd = Constants.open_file_dialog(self, '*.pb, *.pbtxt(*.pb *.pbtxt)')
         if ofd:
-            self.model = ofd
+            self.model = LPRNet(model_filepath=ofd[0])
 
     def load_label(self):
         ofd = Constants.open_file_dialog(self, '*.txt(*.txt)')
@@ -71,7 +71,7 @@ class MainWindow(QtWidgets.QMainWindow):
             Constants.clear_hbox(self, self.ui.horizontalLayout)
             self.ui.horizontalLayout.addWidget(image_frame)
             if self.model:
-                self.recognize()
+                self.image_recognize()
             else:
                 msg = QMessageBox()
                 msg.setWindowTitle("No model error")
@@ -79,13 +79,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 msg.setStandardButtons(QMessageBox.Ok)
                 msg.exec_()
 
-    def recognize(self):
+    def image_recognize(self):
         image = cv2.resize(self.image, (94, 24))
         img_batch = np.expand_dims(image, axis=0)
-        model = LPRNet(model_filepath=self.model[0])
-        result = model.test(data=img_batch)
+        result = self.model.test(data=img_batch)
 
-        decoded_labels = []
         for item in result:
             # print(item)
             expression = ['' if i == -1 else DECODE_DICT[i] for i in item]
