@@ -65,7 +65,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                  image.shape[1],
                                  image.shape[0],
                                  image.strides[0],
-                                 QtGui.QImage.Format_RGB888)
+                                 QtGui.QImage.Format_BGR888)
             image_frame = QtWidgets.QLabel()
             image_frame.setPixmap(QtGui.QPixmap.fromImage(image))
             Constants.clear_hbox(self, self.ui.horizontalLayout)
