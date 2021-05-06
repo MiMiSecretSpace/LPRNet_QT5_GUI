@@ -43,7 +43,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Open file</string>
+       <string>Choose image</string>
       </property>
      </widget>
      <widget class="QLabel" name="Image_path_text">
@@ -58,17 +58,6 @@
       <property name="text">
        <string>Path</string>
       </property>
-     </widget>
-     <widget class="QWidget" name="horizontalLayoutWidget">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>761</width>
-        <height>451</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout"/>
      </widget>
      <widget class="QTextEdit" name="textEdit">
       <property name="enabled">
@@ -102,11 +91,64 @@
        <string>Result</string>
       </property>
      </widget>
+     <widget class="QLabel" name="image_holder">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>755</width>
+        <height>450</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">Background-color: #000;</string>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
     </widget>
-    <widget class="QWidget" name="Video">
+    <widget class="QWidget" name="Image">
      <attribute name="title">
       <string>Video</string>
      </attribute>
+     <widget class="QWidget" name="horizontalLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>761</width>
+        <height>451</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_2"/>
+     </widget>
+     <widget class="QPushButton" name="Video_path">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>90</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Choose video</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="Image_path_text_2">
+      <property name="geometry">
+       <rect>
+        <x>110</x>
+        <y>20</y>
+        <width>431</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Path</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="Real_time">
      <attribute name="title">
@@ -128,7 +170,14 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionModel"/>
+    <widget class="QMenu" name="menuModel">
+     <property name="title">
+      <string>Model</string>
+     </property>
+     <addaction name="actionLPRNet"/>
+     <addaction name="actionObject_Detection"/>
+    </widget>
+    <addaction name="menuModel"/>
     <addaction name="actionLabel"/>
     <addaction name="separator"/>
     <addaction name="actionSaveAs"/>
@@ -173,12 +222,14 @@
     <string>About Us</string>
    </property>
   </action>
-  <action name="actionModel">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
+  <action name="actionLPRNet">
    <property name="text">
-    <string>Model</string>
+    <string>LPRNet</string>
+   </property>
+  </action>
+  <action name="actionObject_Detection">
+   <property name="text">
+    <string>Object Detection</string>
    </property>
   </action>
  </widget>
