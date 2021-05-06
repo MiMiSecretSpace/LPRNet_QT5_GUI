@@ -1,20 +1,15 @@
-import cv2
-import numpy as np
 import tensorflow.compat.v1 as tf
-
 tf.disable_v2_behavior()
-
 
 class LPRNet(object):
     def __init__(self, model_filepath):
         # The file path of model
         self.model_filepath = model_filepath
-        self.sess = None
         # Initialize the model
         self.load_graph(model_filepath=self.model_filepath)
 
     def load_graph(self, model_filepath):
-        # print('Loading model...')
+        #print('Loading model...')
         self.graph = tf.Graph()
 
         with tf.gfile.GFile(model_filepath, 'rb') as f:
@@ -30,11 +25,10 @@ class LPRNet(object):
 
             tf.import_graph_def(graph_def, {'inputs': self.input})
 
+        #print('Model loading complete!')
+        self.sess = tf.InteractiveSession(graph=self.graph)
+
     def test(self, data):
-        if not self.sess:
-            self.sess = tf.InteractiveSession(graph=self.graph)
-        image = cv2.resize(data, (94, 24))
-        img_batch = np.expand_dims(image, axis=0)
         logits = self.graph.get_tensor_by_name('import/decoded:0')
-        output = self.sess.run(logits, feed_dict={self.input: img_batch})
+        output = self.sess.run(logits, feed_dict={self.input: data})
         return output
