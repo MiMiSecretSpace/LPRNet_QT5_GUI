@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>600</height>
+    <height>658</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,11 +23,11 @@
       <x>10</x>
       <y>10</y>
       <width>781</width>
-      <height>551</height>
+      <height>591</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="Image">
      <attribute name="title">
@@ -96,7 +96,7 @@
        <rect>
         <x>10</x>
         <y>60</y>
-        <width>755</width>
+        <width>761</width>
         <height>450</height>
        </rect>
       </property>
@@ -112,17 +112,6 @@
      <attribute name="title">
       <string>Video</string>
      </attribute>
-     <widget class="QWidget" name="horizontalLayoutWidget_2">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>761</width>
-        <height>451</height>
-       </rect>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2"/>
-     </widget>
      <widget class="QPushButton" name="Video_path">
       <property name="geometry">
        <rect>
@@ -136,7 +125,7 @@
        <string>Choose video</string>
       </property>
      </widget>
-     <widget class="QLabel" name="Image_path_text_2">
+     <widget class="QLabel" name="video_path_text">
       <property name="geometry">
        <rect>
         <x>110</x>
@@ -147,6 +136,35 @@
       </property>
       <property name="text">
        <string>Path</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="video_holder">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>761</width>
+        <height>450</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">Background-color: #000;</string>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="play_buttom">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>530</y>
+        <width>90</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Play</string>
       </property>
      </widget>
     </widget>
@@ -172,7 +190,7 @@
     </property>
     <widget class="QMenu" name="menuModel">
      <property name="title">
-      <string>Model</string>
+      <string>Models</string>
      </property>
      <addaction name="actionLPRNet"/>
      <addaction name="actionObject_Detection"/>

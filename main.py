@@ -4,6 +4,7 @@ import numpy as np
 
 from PyQt5 import QtWidgets, QtGui
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
+from PyQt5.QtCore import QTimer
 
 from ui_main import Ui_MainWindow
 from LPRNet import LPRNet
@@ -49,6 +50,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
+        self.image = ''
         self.ui.setupUi(self)
         self.setWindowTitle('LPRNet GUI')
         self.ui.actionLPRNet.triggered.connect(self.load_lprnet_model)
@@ -58,6 +60,27 @@ class MainWindow(QtWidgets.QMainWindow):
         self.lprnet_model = None
         self.object_detection_model = None
         self.label = None
+        self.cap = ''
+        self.fps = 0
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.timer_tick)
+        self.ui.play_buttom.clicked.connect(self.play_pause)
+
+    def play_pause(self):
+        if self.timer.isActive():
+            self.timer.stop()
+            self.ui.play_buttom.setText('Play')
+        else:
+            self.timer.start(1000/self.fps)
+            self.ui.play_buttom.setText('Pause')
+
+    def timer_tick(self):
+        ret, self.image = self.cap.read()
+        if not ret:
+            self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            ret, self.image = self.cap.read()
+        self.img_height, self.img_width, self.img_channles = self.image.shape
+        self.image_recognize(self.ui.video_holder)
 
     def load_lprnet_model(self):
         ofd = Utils.open_file_dialog(self, '*.pb, *.pbtxt(*.pb *.pbtxt)')
@@ -78,44 +101,54 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def load_image(self):
         ofd = Utils.open_file_dialog(self, '*.jpg, *.jpge(*.jpg *.jpge)')
-        if ofd:
-            self.ui.Image_path_text.setText(ofd[0])
-            self.image = cv2.imread(ofd[0])
-            self.img_height, self.img_width, self.img_channles = self.image.shape
+        if not ofd:
+            return
+        self.ui.Image_path_text.setText(ofd[0])
+        self.image = cv2.imread(ofd[0])
+        self.img_height, self.img_width, self.img_channles = self.image.shape
 
-            if self.object_detection_model:
-                self.image_recognize()
-            else:
-                msg = QMessageBox()
-                msg.setWindowTitle("No model error")
-                msg.setText("No model loaded !")
-                msg.setStandardButtons(QMessageBox.Ok)
-                msg.exec_()
+        if self.object_detection_model or self.lprnet_model:
+            self.image_recognize(self.ui.image_holder)
+        else:
+            msg = QMessageBox()
+            msg.setWindowTitle("No model error")
+            msg.setText("No model loaded !")
+            msg.setStandardButtons(QMessageBox.Ok)
+            msg.exec_()
 
     def load_video(self):
         ofd = Utils.open_file_dialog(self, '*.mp4, *.avi(*.mp4 *.avi)')
-        if ofd:
-            self.ui.Image_path_text_2.setText(ofd[0])
+        if not ofd:
+            return
+        self.ui.video_path_text.setText(ofd[0])
+        self.cap = cv2.VideoCapture(ofd[0])
+        self.fps = self.cap.get(cv2.CAP_PROP_FPS)
 
-    def image_recognize(self):
-        result = self.object_detection_model.test(data=self.image)
-        for i in range(len(result[2])):
-            score = result[2][0][i]
-            if score > 0.05:
-                top = int(result[0][0][i][0] * self.img_height)
-                left = int(result[0][0][i][1] * self.img_width)
-                bottom = int(result[0][0][i][2] * self.img_height)
-                right = int(result[0][0][i][3] * self.img_width)
-                cv2.rectangle(self.image, (left, top), (right, bottom), (0, 255, 0), 5)
-        Utils.show_image(self, self.image, self.ui.image_holder)
-        #crop_image = self.image[top:bottom, left:right]
-        #result = self.lprnet_model.test(crop_image)
-        #for item in result:
-        #    # print(item)
-        #    expression = ['' if i == -1 else DECODE_DICT[i] for i in item]
-        #    expression = ''.join(expression)
-        #
-        #self.ui.textEdit.setText(expression)
+    def image_recognize(self, label):
+        crop_images = []
+        if self.object_detection_model:
+            result = self.object_detection_model.test(data=self.image)
+            for i in range(10):
+                score = result[2][0][i]
+                if score > 0.001:
+                    top = abs(int(result[0][0][i][0] * self.img_height))
+                    left = abs(int(result[0][0][i][1] * self.img_width))
+                    bottom = abs(int(result[0][0][i][2] * self.img_height))
+                    right = abs(int(result[0][0][i][3] * self.img_width))
+                    crop_images.append(self.image[top:bottom, left:right])
+                    cv2.rectangle(self.image, (left, top), (right, bottom), (0, 255, 0), 5)
+
+        Utils.show_image(self, self.image, label)
+
+        if self.lprnet_model:
+            for i in range(len(crop_images)):
+                result = self.lprnet_model.test(crop_images[i])
+                for item in result:
+                    # print(item)
+                    expression = ['' if i == -1 else DECODE_DICT[i] for i in item]
+                    expression = ''.join(expression)
+
+                self.ui.textEdit.setText(expression)
 
 
 if __name__ == '__main__':

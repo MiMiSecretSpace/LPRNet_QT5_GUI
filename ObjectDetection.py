@@ -10,7 +10,7 @@ class ObjectDetection(object):
         self.load_graph(model_filepath=self.model_filepath)
 
     def load_graph(self, model_filepath):
-        self.interpreter = tf.lite.Interpreter(model_path=model_filepath, num_threads=4)
+        self.interpreter = tf.lite.Interpreter(model_path=model_filepath)
         self.interpreter.allocate_tensors()
 
         self.input_details = self.interpreter.get_input_details()
