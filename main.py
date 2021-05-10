@@ -38,11 +38,12 @@ class Utils:
     @staticmethod
     def show_image(self, image, label):
         resize_image = cv2.resize(image, (label.width(), label.height()))
+        resize_image = cv2.cvtColor(resize_image, cv2.COLOR_BGR2RGB)
         display_image = QtGui.QImage(resize_image,
                                      resize_image.shape[1],
                                      resize_image.shape[0],
                                      resize_image.strides[0],
-                                     QtGui.QImage.Format_BGR888)
+                                     QtGui.QImage.Format_RGB888)
         label.setPixmap(QtGui.QPixmap.fromImage(display_image))
 
 
