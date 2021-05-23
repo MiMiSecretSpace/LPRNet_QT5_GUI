@@ -21,7 +21,7 @@ class ObjectDetection(object):
         width = self.input_details[0]['shape'][2]
         resize_img = cv2.resize(data, (width, height))
         input_data = np.expand_dims(resize_img, axis=0)
-        input_data = (np.float32(input_data) - 127.5) / 127.5
+        #input_data = (np.float32(input_data) - 127.5) / 127.5
         self.interpreter.set_tensor(self.input_details[0]['index'], input_data)
         self.interpreter.invoke()
         output_data = [self.interpreter.get_tensor(self.output_details[0]['index']),
