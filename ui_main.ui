@@ -27,7 +27,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="Image">
      <attribute name="title">
@@ -104,7 +104,7 @@
        <string notr="true">Background-color: #000;</string>
       </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string/>
       </property>
      </widget>
     </widget>
@@ -151,7 +151,7 @@
        <string notr="true">Background-color: #000;</string>
       </property>
       <property name="text">
-       <string>TextLabel</string>
+       <string/>
       </property>
      </widget>
      <widget class="QPushButton" name="play_buttom">
@@ -207,6 +207,7 @@
      </property>
      <addaction name="actionLPRNet"/>
      <addaction name="actionObject_Detection"/>
+     <addaction name="actionLicense_Plate_Recognition"/>
     </widget>
     <addaction name="menuModel"/>
     <addaction name="actionLabel"/>
@@ -260,7 +261,12 @@
   </action>
   <action name="actionObject_Detection">
    <property name="text">
-    <string>Object Detection</string>
+    <string>Vehicle Detection</string>
+   </property>
+  </action>
+  <action name="actionLicense_Plate_Recognition">
+   <property name="text">
+    <string>License Plate Recognition</string>
    </property>
   </action>
  </widget>
