@@ -2,4 +2,4 @@
 
 This is an application for LPRNet implement
 
-![](https://i.imgur.com/cxwjlmP.png)
+![](https://i.imgur.com/sBWefeJ.png)
