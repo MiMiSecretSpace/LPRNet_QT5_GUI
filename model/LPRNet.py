@@ -1,8 +1,13 @@
 import cv2
 import numpy as np
+#import tensorflow as tf
 import tensorflow.compat.v1 as tf
 
 tf.disable_v2_behavior()
+
+CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789"  # exclude I, O
+CHARS_DICT = {char: i for i, char in enumerate(CHARS)}
+DECODE_DICT = {i: char for i, char in enumerate(CHARS)}
 
 
 class LPRNet(object):
@@ -38,3 +43,10 @@ class LPRNet(object):
         logits = self.graph.get_tensor_by_name('import/decoded:0')
         output = self.sess.run(logits, feed_dict={self.input: img_batch})
         return output
+
+    def decode(self, numbers):
+        for item in numbers:
+            # print(item)
+            expression = ['' if i == -1 else DECODE_DICT[i] for i in item]
+            expression = ''.join(expression)
+        return expression
