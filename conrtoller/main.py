@@ -3,16 +3,15 @@ import sys
 import numpy as np
 import time
 
-from PyQt5 import QtWidgets, QtGui
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QMessageBox
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtCore import QTimer, QObject, QThread, pyqtSignal
 
-from ui_main import Ui_MainWindow
-from LPRNet import LPRNet
-from LPRNet_tflite import LPRNetTflite
-from VehicleDetection import VehicleDetection
-from LicensePlateRecognition import LicensePlateRecognition
-from Utils import Utils
+from view.ui_main import Ui_MainWindow
+from model.LPRNet import LPRNet
+from model.VehicleDetection import VehicleDetection
+from model.LicensePlateRecognition import LicensePlateRecognition
+from conrtoller.Utils import Utils
 
 CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789"  # exclude I, O
 CHARS_DICT = {char: i for i, char in enumerate(CHARS)}
@@ -69,9 +68,9 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.image = np.ndarray
-        self.lprnet_model = LPRNet('model/LPRNet.pb')
-        self.vehicle_detection_model = VehicleDetection('model/ObjectModel.tflite')
-        self.lp_recognition_model = LicensePlateRecognition('model/LicensePlateRecognition.tflite')
+        self.lprnet_model = LPRNet('../material/LPRNet.pb')
+        self.vehicle_detection_model = VehicleDetection('../material/ObjectModel.tflite')
+        self.lp_recognition_model = LicensePlateRecognition('../material/LicensePlateRecognition.tflite')
         self.label = None
         self.cap = cv2.VideoCapture
         self.fps = 0

@@ -11,7 +11,7 @@ class LicensePlateRecognition(ObjectDetection):
         result = self.test(data=image, rearrange=True)
         img_height, img_width, img_channels = image.shape
         crop_images_pos = []
-        for i in range(2):
+        for i in range(1):
             #if score > 0.001:
             top = abs(int(result[0][0][i][0] * img_height))
             left = abs(int(result[0][0][i][1] * img_width))

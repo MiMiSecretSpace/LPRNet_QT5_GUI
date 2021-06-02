@@ -1,6 +1,4 @@
-from PyQt5.QtCore import pyqtSignal
-
-from ObjectDetection import ObjectDetection
+from model.ObjectDetection import ObjectDetection
 
 VEHICLE = ["person", "car", "motorcycle", "bus", "truck"]
 
