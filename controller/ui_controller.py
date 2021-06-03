@@ -1,8 +1,10 @@
 import cv2
 import numpy as np
 
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtGui import QCloseEvent
+from PyQt5.QtWidgets import QMainWindow, QAction, QActionGroup
 from PyQt5.QtCore import QTimer, QThread
+from PyQt5.QtMultimedia import QCameraInfo
 
 from view.ui_main import Ui_MainWindow
 from model.LPRNet import LPRNet
@@ -22,22 +24,42 @@ class MainWindow(QMainWindow):
         self.vehicle_detection_model = VehicleDetection('material/ObjectModel.tflite')
         self.lp_recognition_model = LicensePlateRecognition('material/LicensePlateRecognition.tflite')
         self.label = None
-        self.cap = cv2.VideoCapture
+        self.cap = None
         self.fps = 0
         self.timer = QTimer(self)
         self.thread = QThread()
         self.plates = None
         self.last_time = 0
+        self.camera_group = QActionGroup(self)
         self.init_slots()
+        self.show_availableCamera()
 
     def init_slots(self):
         self.ui.actionLPRNet.triggered.connect(self.set_lprnet_model)
         self.ui.actionObject_Detection.triggered.connect(self.set_vehicle_detection_model)
         self.ui.actionLicense_Plate_Recognition.triggered.connect(self.set_license_plate_recognition_model)
-        self.ui.Image_path.clicked.connect(self.load_image)
-        self.ui.Video_path.clicked.connect(self.load_video)
+        self.ui.Image_path.clicked.connect(self.set_image)
+        self.ui.Video_path.clicked.connect(self.set_video)
         self.ui.play_buttom.clicked.connect(self.play_pause)
+        self.ui.checkBox.stateChanged.connect(self.set_camera)
+        #self.ui.menuCamera.aboutToShow.connect(self.show_availableCamera)
         self.timer.timeout.connect(self.timer_tick)
+
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        if self.cap.isOpened():
+            print('release')
+            self.cap.release()
+        print('close')
+
+    def show_availableCamera(self):
+        self.ui.menuCamera.clear()
+        for c in QCameraInfo.availableCameras():
+            action = QAction(self)
+            action.setCheckable(True)
+            action.setText(c.description())
+            action.setWhatsThis(str(c.position()))
+            self.camera_group.addAction(action)
+            self.ui.menuCamera.addAction(action)
 
     def show_recognition_rate(self, t):
         t = int(t * 1000)
@@ -54,11 +76,6 @@ class MainWindow(QMainWindow):
 
     def set_plate(self, plates):
         self.plates = plates
-        '''
-        Utils.bounding_box(self, self.image, self.plates[0],
-                           self.plates[1], self.plates[2],
-                           self.plates[3], None)
-        '''
         for plate in self.plates:
             Utils.bounding_box(self, self.image, plate[0][0],
                                plate[0][1], plate[0][2],
@@ -114,7 +131,7 @@ class MainWindow(QMainWindow):
         if ofd:
             self.label = ofd
 
-    def load_image(self):
+    def set_image(self):
         ofd = Utils.open_file_dialog(self, '*.jpg, *.jpge(*.jpg *.jpge)')
         if not ofd:
             return
@@ -135,10 +152,23 @@ class MainWindow(QMainWindow):
             msg.exec_()
         '''
 
-    def load_video(self):
+    def set_video(self):
         ofd = Utils.open_file_dialog(self, '*.mp4, *.avi(*.mp4 *.avi)')
         if not ofd:
             return
-        self.ui.video_path_text.setText(ofd[0])
         self.cap = cv2.VideoCapture(ofd[0])
+        self.ui.video_path_text.setText(ofd[0])
         self.fps = self.cap.get(cv2.CAP_PROP_FPS)
+
+    def set_camera(self):
+        camera = self.camera_group.checkedAction()
+        if camera is None:
+            #self.ui.checkBox.setChecked(False)
+            print('Please select a camera')
+            return
+        if self.ui.checkBox.isChecked():
+            self.cap = cv2.VideoCapture(int(camera.whatsThis()))
+            self.fps = self.cap.get(cv2.CAP_PROP_FPS)
+            self.ui.video_path_text.setText(camera.text())
+        else:
+            self.cap.release()
