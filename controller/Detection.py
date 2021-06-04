@@ -27,6 +27,8 @@ class Detection(QObject):
         plates = self.lp_recognition.scoring(self.image)
         for position in plates:
             plate = self.image[position[1]:position[3], position[0]:position[2]]
+            if plate.shape[0] == 0 or plate.shape[1] == 0:
+                return
             numbers = self.lprnet.test(plate)
             expression = self.lprnet.decode(numbers)
             result.append([position, expression])

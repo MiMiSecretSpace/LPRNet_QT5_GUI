@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'ui_main.ui'
+# Form implementation generated from reading ui file 'Mainwindow_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -48,17 +48,10 @@ class Ui_MainWindow(object):
         self.play_buttom.setGeometry(QtCore.QRect(10, 530, 90, 28))
         self.play_buttom.setObjectName("play_buttom")
         self.checkBox = QtWidgets.QCheckBox(self.Image1)
+        self.checkBox.setEnabled(False)
         self.checkBox.setGeometry(QtCore.QRect(690, 20, 75, 18))
         self.checkBox.setObjectName("checkBox")
         self.tabWidget.addTab(self.Image1, "")
-        self.Real_time = QtWidgets.QWidget()
-        self.Real_time.setObjectName("Real_time")
-        self.camera_holder = QtWidgets.QLabel(self.Real_time)
-        self.camera_holder.setGeometry(QtCore.QRect(10, 60, 761, 450))
-        self.camera_holder.setStyleSheet("Background-color: #000;")
-        self.camera_holder.setText("")
-        self.camera_holder.setObjectName("camera_holder")
-        self.tabWidget.addTab(self.Real_time, "")
         self.recognition_rate = QtWidgets.QLabel(self.centralwidget)
         self.recognition_rate.setGeometry(QtCore.QRect(720, 620, 61, 21))
         self.recognition_rate.setObjectName("recognition_rate")
@@ -133,7 +126,6 @@ class Ui_MainWindow(object):
         self.play_buttom.setText(_translate("MainWindow", "Play"))
         self.checkBox.setText(_translate("MainWindow", "Real time"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.Image1), _translate("MainWindow", "Video"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.Real_time), _translate("MainWindow", "Real time"))
         self.recognition_rate.setText(_translate("MainWindow", "0"))
         self.Image_result.setText(_translate("MainWindow", "Processing time :"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))

@@ -2,16 +2,18 @@ import cv2
 import numpy as np
 
 from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import QMainWindow, QAction, QActionGroup
+from PyQt5.QtWidgets import QMainWindow, QAction, QActionGroup, QDialog
 from PyQt5.QtCore import QTimer, QThread
 from PyQt5.QtMultimedia import QCameraInfo
 
-from view.ui_main import Ui_MainWindow
+from view.Mainwindow_ui import Ui_MainWindow
+from view.About_us_dialog import Ui_Dialog
 from model.LPRNet import LPRNet
 from model.VehicleDetection import VehicleDetection
 from model.LicensePlateRecognition import LicensePlateRecognition
 from controller.Utils import Utils
 from controller.Detection import Detection
+from controller.About_us_controller import AboutUsDialog
 
 
 class MainWindow(QMainWindow):
@@ -38,26 +40,34 @@ class MainWindow(QMainWindow):
         self.ui.actionLPRNet.triggered.connect(self.set_lprnet_model)
         self.ui.actionObject_Detection.triggered.connect(self.set_vehicle_detection_model)
         self.ui.actionLicense_Plate_Recognition.triggered.connect(self.set_license_plate_recognition_model)
+        self.ui.actionAbout_Us.triggered.connect(self.about_us)
         self.ui.Image_path.clicked.connect(self.set_image)
         self.ui.Video_path.clicked.connect(self.set_video)
         self.ui.play_buttom.clicked.connect(self.play_pause)
         self.ui.checkBox.stateChanged.connect(self.set_camera)
+        self.camera_group.triggered.connect(lambda: self.ui.checkBox.setEnabled(True))
         #self.ui.menuCamera.aboutToShow.connect(self.show_availableCamera)
         self.timer.timeout.connect(self.timer_tick)
 
+    def about_us(self):
+        d = AboutUsDialog()
+        d.exec_()
+
     def closeEvent(self, a0: QCloseEvent) -> None:
-        if self.cap.isOpened():
-            print('release')
+        if self.cap is not None:
             self.cap.release()
+            self.thread.deleteLater()
+            print('release')
         print('close')
 
     def show_availableCamera(self):
         self.ui.menuCamera.clear()
-        for c in QCameraInfo.availableCameras():
+        QCameraInfo.defaultCamera().deviceName()
+        for index, c in enumerate(QCameraInfo.availableCameras()):
             action = QAction(self)
             action.setCheckable(True)
             action.setText(c.description())
-            action.setWhatsThis(str(c.position()))
+            action.setWhatsThis(str(index))
             self.camera_group.addAction(action)
             self.ui.menuCamera.addAction(action)
 
@@ -77,6 +87,8 @@ class MainWindow(QMainWindow):
     def set_plate(self, plates):
         self.plates = plates
         for plate in self.plates:
+            if plate[1] is '':
+                break
             Utils.bounding_box(self, self.image, plate[0][0],
                                plate[0][1], plate[0][2],
                                plate[0][3], plate[1])
@@ -163,7 +175,6 @@ class MainWindow(QMainWindow):
     def set_camera(self):
         camera = self.camera_group.checkedAction()
         if camera is None:
-            #self.ui.checkBox.setChecked(False)
             print('Please select a camera')
             return
         if self.ui.checkBox.isChecked():

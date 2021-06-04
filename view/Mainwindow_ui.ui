@@ -136,6 +136,9 @@
       </property>
      </widget>
      <widget class="QCheckBox" name="checkBox">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
       <property name="geometry">
        <rect>
         <x>690</x>
@@ -146,27 +149,6 @@
       </property>
       <property name="text">
        <string>Real time</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="Real_time">
-     <attribute name="title">
-      <string>Real time</string>
-     </attribute>
-     <widget class="QLabel" name="camera_holder">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>60</y>
-        <width>761</width>
-        <height>450</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">Background-color: #000;</string>
-      </property>
-      <property name="text">
-       <string/>
       </property>
      </widget>
     </widget>
