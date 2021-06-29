@@ -6,7 +6,7 @@ from view.About_us_dialog import Ui_Dialog
 
 class AboutUsDialog(QDialog):
     def __init__(self):
-        super(AboutUsDialog, self).__init__()
+        super().__init__()
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         img = QImage('material/icon.jpg')

@@ -5,7 +5,7 @@ import tensorflow.compat.v1 as tf
 
 tf.disable_v2_behavior()
 
-CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789"  # exclude I, O
+CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789-"  # exclude I, O
 CHARS_DICT = {char: i for i, char in enumerate(CHARS)}
 DECODE_DICT = {i: char for i, char in enumerate(CHARS)}
 

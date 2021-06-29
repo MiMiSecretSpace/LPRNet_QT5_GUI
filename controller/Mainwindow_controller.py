@@ -2,12 +2,11 @@ import cv2
 import numpy as np
 
 from PyQt5.QtGui import QCloseEvent
-from PyQt5.QtWidgets import QMainWindow, QAction, QActionGroup, QDialog
+from PyQt5.QtWidgets import QMainWindow, QAction, QActionGroup
 from PyQt5.QtCore import QTimer, QThread
 from PyQt5.QtMultimedia import QCameraInfo
 
 from view.Mainwindow_ui import Ui_MainWindow
-from view.About_us_dialog import Ui_Dialog
 from model.LPRNet import LPRNet
 from model.VehicleDetection import VehicleDetection
 from model.LicensePlateRecognition import LicensePlateRecognition
@@ -18,13 +17,13 @@ from controller.About_us_controller import AboutUsDialog
 
 class MainWindow(QMainWindow):
     def __init__(self):
-        super(MainWindow, self).__init__()
+        super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.image = np.ndarray
-        self.lprnet_model = LPRNet('material/LPRNet.pb')
+        self.lprnet_model = LPRNet('material/LPRNet_tw.pb')
         self.vehicle_detection_model = VehicleDetection('material/ObjectModel.tflite')
-        self.lp_recognition_model = LicensePlateRecognition('material/LicensePlateRecognition.tflite')
+        self.lp_recognition_model = LicensePlateRecognition('material/model.tflite')
         self.label = None
         self.cap = None
         self.fps = 0
@@ -40,18 +39,13 @@ class MainWindow(QMainWindow):
         self.ui.actionLPRNet.triggered.connect(self.set_lprnet_model)
         self.ui.actionObject_Detection.triggered.connect(self.set_vehicle_detection_model)
         self.ui.actionLicense_Plate_Recognition.triggered.connect(self.set_license_plate_recognition_model)
-        self.ui.actionAbout_Us.triggered.connect(self.about_us)
+        self.ui.actionAbout_Us.triggered.connect(lambda: AboutUsDialog().exec())
         self.ui.Image_path.clicked.connect(self.set_image)
         self.ui.Video_path.clicked.connect(self.set_video)
         self.ui.play_buttom.clicked.connect(self.play_pause)
         self.ui.checkBox.stateChanged.connect(self.set_camera)
         self.camera_group.triggered.connect(lambda: self.ui.checkBox.setEnabled(True))
-        #self.ui.menuCamera.aboutToShow.connect(self.show_availableCamera)
         self.timer.timeout.connect(self.timer_tick)
-
-    def about_us(self):
-        d = AboutUsDialog()
-        d.exec_()
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         if self.cap is not None:
@@ -73,7 +67,7 @@ class MainWindow(QMainWindow):
 
     def show_recognition_rate(self, t):
         t = int(t * 1000)
-        self.ui.recognition_rate.setText(str(t - self.last_time) + ' ms')
+        self.ui.recognition_rate.setText(f'{str(t - self.last_time)} ms')
         self.last_time = t
 
     def play_pause(self):
@@ -118,33 +112,35 @@ class MainWindow(QMainWindow):
             self.cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
             ret, self.image = self.cap.read()
         self.detection_threading(use_image=False)
+        if self.image is None:
+            return
         Utils.show_image(self, self.image, self.ui.video_holder)
 
     def set_lprnet_model(self):
-        ofd = Utils.open_file_dialog(self, '*.pb, *.pbtxt(*.pb *.pbtxt)')
+        ofd = Utils.open_file_dialog(self, '*.pb, *.pbtxt(*.pb *.pbtxt)', 'material')
         if ofd:
             self.lprnet_model = LPRNet(model_filepath=ofd[0])
             self.ui.statusbar.showMessage('LPRNet success loaded !', 2000)
 
     def set_vehicle_detection_model(self):
-        ofd = Utils.open_file_dialog(self, '*.tflite(*.tflite)')
+        ofd = Utils.open_file_dialog(self, '*.tflite(*.tflite)', 'material')
         if ofd:
             self.vehicle_detection_model = VehicleDetection(model_filepath=ofd[0])
             self.ui.statusbar.showMessage('Vehicle detection model success loaded !', 2000)
 
     def set_license_plate_recognition_model(self):
-        ofd = Utils.open_file_dialog(self, '*.tflite(*.tflite)')
+        ofd = Utils.open_file_dialog(self, '*.tflite(*.tflite)', 'material')
         if ofd:
             self.lp_recognition_model = LicensePlateRecognition(model_filepath=ofd[0])
             self.ui.statusbar.showMessage('License plate recognition model success loaded !', 2000)
 
-    def load_label(self):
-        ofd = Utils.open_file_dialog(self, '*.txt(*.txt)')
+    def set_label(self):
+        ofd = Utils.open_file_dialog(self, '*.txt(*.txt)', 'material')
         if ofd:
             self.label = ofd
 
     def set_image(self):
-        ofd = Utils.open_file_dialog(self, '*.jpg, *.jpge(*.jpg *.jpge)')
+        ofd = Utils.open_file_dialog(self, '*.jpg, *.jpge(*.jpg *.jpge)', 'material')
         if not ofd:
             return
         self.ui.Image_path_text.setText(ofd[0])
@@ -165,7 +161,7 @@ class MainWindow(QMainWindow):
         '''
 
     def set_video(self):
-        ofd = Utils.open_file_dialog(self, '*.mp4, *.avi(*.mp4 *.avi)')
+        ofd = Utils.open_file_dialog(self, '*.mp4, *.avi(*.mp4 *.avi)', 'material')
         if not ofd:
             return
         self.cap = cv2.VideoCapture(ofd[0])

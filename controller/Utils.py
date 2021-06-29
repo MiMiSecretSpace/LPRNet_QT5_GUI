@@ -7,8 +7,8 @@ from PyQt5.QtWidgets import QFileDialog
 
 class Utils:
     @staticmethod
-    def open_file_dialog(self, file_type):
-        file_name = QFileDialog.getOpenFileNames(self, 'Open file', '/home', file_type)
+    def open_file_dialog(self, file_type, directory):
+        file_name = QFileDialog.getOpenFileNames(self, 'Open file', directory, file_type)
         if file_name[0]:
             return file_name[0]
 

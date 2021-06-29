@@ -16,7 +16,7 @@ class Detection(QObject):
                  vehicle_detection_model: VehicleDetection,
                  lp_recognition: LicensePlateRecognition,
                  lprnet: LPRNet):
-        super(Detection, self).__init__()
+        super().__init__()
         self.image = image
         self.vehicle_detection_model = vehicle_detection_model
         self.lp_recognition = lp_recognition
@@ -28,6 +28,7 @@ class Detection(QObject):
         for position in plates:
             plate = self.image[position[1]:position[3], position[0]:position[2]]
             if plate.shape[0] == 0 or plate.shape[1] == 0:
+                self.finished.emit()
                 return
             numbers = self.lprnet.test(plate)
             expression = self.lprnet.decode(numbers)
